@@ -207,7 +207,9 @@
         <directory>${basedir}/src/main/resources</directory>
       </resource>
     </resources>
-    <plugins>
+
+
+  <plugins>
       <!--mybatis 逆向工程插件-->
       <plugin>
         <groupId>org.mybatis.generator</groupId>

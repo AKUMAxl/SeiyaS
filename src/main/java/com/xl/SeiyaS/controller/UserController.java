@@ -79,6 +79,7 @@ public class UserController extends GenericController {
     @RequestMapping(value = "/uploadPic",method = RequestMethod.POST)
     public ModelAndView uploadPic(HttpServletRequest request) throws IllegalStateException,IOException{
 
+        System.out.println("当前操作系统："+System.getProperties().getProperty("os.name"));
         //创建文件夹
         File file1 = new File(CommonPath.BASE_URI+"uploadPic/");
         boolean ok = false;
