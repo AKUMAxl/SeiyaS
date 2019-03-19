@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -46,98 +43,98 @@ public class UserController extends GenericController {
     UserService userService;
 
     //返回jsp视图展示
-    @RequestMapping(value = "/getUserModel",method = RequestMethod.GET)
+    @RequestMapping(value = "/getUserModel", method = RequestMethod.GET)
     public ModelAndView getUsers1(@RequestParam Integer userId) {
         ModelAndView modelAndView = new ModelAndView();
         //调用service方法得到用户列表
-        List<User> users = userService.getUsers(userId);
+        List<User> users = userService.getUsers();
         //将得到的用户列表内容添加到ModelAndView中
-        modelAndView.addObject("users",users);
+        modelAndView.addObject("users", users);
         //设置响应的jsp视图
         modelAndView.setViewName("getUsers");
-        logger.info("===============================成功查询用户列表！");
+        logger.info("===============================根据ID查询用户成功！");
         return modelAndView;
     }
+
     //返回json格式数据，形式1
-    /*@RequestMapping(value = "/getUserList",method = RequestMethod.GET)
-    @ResponseBody
-    public List getUsers2(@RequestParam Integer userId, HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/getUserList", method = RequestMethod.GET)
+//    @ResponseBody 使用此注解直接返回user
+    public void getUsers2(HttpServletRequest request, HttpServletResponse response) {
         //调用service方法得到用户列表
-        List<User> users = userService.getUsers(userId);
-        logger.info("===============================成功查询用户列表！");
-        return users;
-    }*/
-    //返回json格式数据，形式2（自定义了返回的格式）
-    @RequestMapping(value = "/getUserInfo",method = RequestMethod.GET)
-    public void getUsers3(@RequestParam Integer userId, HttpServletRequest request, HttpServletResponse response) {
-        //调用service方法得到用户列表
-        List<User> users = userService.getUsers(userId);
-        logger.info("===============================成功查询用户列表！");
+        List<User> users = userService.getUsers();
+        logger.info("===============================查询用户列表成功！");
         renderSuccessString(response, users);
     }
 
-    @RequestMapping(value = "/uploadPic",method = RequestMethod.POST)
-    public ModelAndView uploadPic(HttpServletRequest request) throws IllegalStateException,IOException{
+    //返回json格式数据，形式2（自定义了返回的格式）
+    @RequestMapping(value = "/getUserInfo", method = RequestMethod.GET)
+    public void getUsers3(@RequestParam Integer userId, HttpServletRequest request, HttpServletResponse response) {
+        //调用service方法得到用户列表
+        User user = userService.getUserById(userId);
+        logger.info("===============================根据id查询USER成功！");
+        renderSuccessString(response, user);
+    }
 
-        System.out.println("当前操作系统："+System.getProperties().getProperty("os.name"));
+    @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
+    public ModelAndView uploadPic(HttpServletRequest request) throws IllegalStateException, IOException {
+
+        System.out.println("当前操作系统：" + System.getProperties().getProperty("os.name"));
         //创建文件夹
-        File file1 = new File(CommonPath.BASE_URI+"uploadPic/");
+        File file1 = new File(CommonPath.BASE_URI + "uploadPic/");
         boolean ok = false;
-        if (!file1.exists()){
+        if (!file1.exists()) {
             ok = file1.mkdir();
         }
-        if (ok){
+        if (ok) {
             System.out.println("文件夹创建成功");
-        }else {
+        } else {
             System.out.println("文件夹已存在或创建失败");
         }
 
         long startTime = System.currentTimeMillis();
         //将当前上下文初始化给  CommonsMutipartResolver （多部分解析器）
-        CommonsMultipartResolver multipartResolver=new CommonsMultipartResolver(request.getSession().getServletContext());
-        if (multipartResolver.isMultipart(request)){
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+        if (multipartResolver.isMultipart(request)) {
             //将request变成多部分request
-            MultipartHttpServletRequest multiRequest=(MultipartHttpServletRequest)request;
-                String a = request.getParameter("no");
-            System.out.println("提交文件时的其他字段NO:"+a);
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+            String a = request.getParameter("no");
+            System.out.println("提交文件时的其他字段NO:" + a);
             //获取multiRequest 中所有的文件名
-            Iterator iter=multiRequest.getFileNames();
-            while(iter.hasNext())
-            {
+            Iterator iter = multiRequest.getFileNames();
+            while (iter.hasNext()) {
                 //一次遍历所有文件
-                MultipartFile file=multiRequest.getFile(iter.next().toString());
-                if(file!=null)
-                {
+                MultipartFile file = multiRequest.getFile(iter.next().toString());
+                if (file != null) {
                     //String path="E:/uploadPic/"+file.getOriginalFilename();
-                    String path=CommonPath.BASE_URI+"uploadPic/"+file.getOriginalFilename();
+                    String path = CommonPath.BASE_URI + "uploadPic/" + file.getOriginalFilename();
                     //上传
                     file.transferTo(new File(path));
                 }
 
             }
         }
-        long  endTime=System.currentTimeMillis();
-        System.out.println("上传用时："+String.valueOf(endTime-startTime)+"ms");
+        long endTime = System.currentTimeMillis();
+        System.out.println("上传用时：" + String.valueOf(endTime - startTime) + "ms");
 
         //设置响应的jsp视图
         ModelAndView modelAndView = new ModelAndView();
         //将得到的用户列表内容添加到ModelAndView中
-        modelAndView.addObject("users","123");
+        modelAndView.addObject("users", "123");
         modelAndView.setViewName("uploadsuccess");
         logger.info("===============================上传图片成功！");
         return modelAndView;
     }
 
-    @RequestMapping(value = "/getQRcode",method = RequestMethod.GET)
+    @RequestMapping(value = "/getQRcode", method = RequestMethod.GET)
     @ResponseBody
-    public void getQRcode(HttpServletRequest request,HttpServletResponse response){
-        String filePath = "E://";
+    public void getQRcode(HttpServletRequest request, HttpServletResponse response) {
+        String filePath = "D://";
         String fileName = "zxing.png";
         String content = "测试zxing生成二维码";
         int width = 300; // 图像宽度
         int height = 300; // 图像高度
         String format = "png";// 图像类型
-        
+
         Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 
@@ -147,7 +144,7 @@ public class UserController extends GenericController {
             MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
         } catch (IOException e) {
             e.printStackTrace();
-        }catch (WriterException e){
+        } catch (WriterException e) {
             e.printStackTrace();
         }
         System.out.println("输出成功.");

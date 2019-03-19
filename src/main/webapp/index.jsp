@@ -8,6 +8,6 @@
 <body>
 <p> welcome to SeiyaS </p>
 <%--<img src="/image/images.jpg" align="center" width="50%" height="50%">--%>
-<img src="../image/images.jpg" align="center" width="50%" height="50%">
+<img src="../image/images.jpg" align="center" width="15%" height="15%">
 </body>
 </html>

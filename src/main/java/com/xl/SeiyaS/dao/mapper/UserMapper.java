@@ -9,5 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserMapper {
+
+    List<User> getUsers();
+
     User getUserById(int id);
 }

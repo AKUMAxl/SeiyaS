@@ -6,4 +6,8 @@
     select * from user WHERE id=#{id,jdbcType=INTEGER};
   </select>
 
+  <select id="getUsers" resultType="com.xl.SeiyaS.entity.User" >
+    select * from user;
+  </select>
+
 </mapper>

@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequestMapping("/good")
 public class GoodController extends GenericController {
 
-    private Logger logger = Logger.getLogger(UserController.class);
+    private Logger logger = Logger.getLogger(GoodController.class);
 
     @Resource
     private GoodService goodService;
